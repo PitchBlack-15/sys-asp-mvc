@@ -1,0 +1,26 @@
+﻿
+@model IEnumerable<aspmvc.Models.Customer>
+@{
+    /**/
+
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Customers</h2>
+
+@if (!Model.Any())
+{
+    <p>No Registered Customers</p>
+}
+else
+{
+    foreach (var customer in Model)
+    {
+        <ul>
+            <li>@Html.ActionLink(customer.Name, "Details", "Customers" , new { ID = customer.Id }, null ) </li>
+        </ul>
+    }
+
+}
+
