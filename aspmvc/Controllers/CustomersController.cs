@@ -5,17 +5,30 @@ using System.Web;
 using System.Web.Mvc;
 using aspmvc.ViewModels;
 using aspmvc.Models;
+using System.Data.Entity;
 
 namespace aspmvc.Controllers
 {
     public class CustomersController : Controller
     {
         // GET: Customers
-       
-        
+
+        private ApplicationDbContext _Context;
+
+        public CustomersController()
+        {
+            _Context = new ApplicationDbContext();
+
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _Context.Dispose();
+        }
         public ViewResult Index()
         {
-            var customer = GetCustomers();
+            var customer = _Context.Customers.Include(c => c.MembershipType).ToList();
+
             return View(customer);
         }
 
@@ -25,7 +38,7 @@ namespace aspmvc.Controllers
         public ActionResult Details(int ID)
         {
 
-            var detail = GetCustomers().SingleOrDefault(d => d.Id == ID);
+            var detail = _Context.Customers.Include(c => c.MembershipType).SingleOrDefault(d => d.Id == ID);
 
             if (detail == null)
                 return HttpNotFound();
@@ -34,18 +47,7 @@ namespace aspmvc.Controllers
         }
 
        
-        private IEnumerable<Customer> GetCustomers()
-        {
-            return  new List<Customer>
-            {
-                new Customer { Id = 1, Name = "Lloyd Windell I. Aguilar" },
-                new Customer { Id = 2, Name = "Ann Valerie Llarenas" }
-            };
-
-            
-
-            
-        }
+   
 
     }
 }
